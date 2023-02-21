@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<header id="header" class="header-admin" th:fragment="header">
+  <div class="header-wrap">
+    <h1 class="logo"><a th:href="@{/dashboard}"><span class="blind">JD</span> </a> </h1>
+    <div class="gnb" th:with="url=${#request.getRequestURI()}">
+      <ul>
+        <li sec:authorize="hasRole('ROLE_WEBMASTER')" th:classappend="${#strings.startsWith(url, '/admin')} == true ? 'active'"><a th:href="@{/admin/author-mng}">관리자 관리</a> </li>
+        <li th:classappend="${#strings.startsWith(url, '/board')} == true ? 'active'"><a th:href="@{/board/board(site='MAIN')}">게시물 관리</a> </li>
+      </ul>
+    </div>
+    <div th:classappend="util-menu">
+      <p><a href="javascript:void(0)" class="user-name a-layout" sec:authentication="name"></a> 님 <a href="javascript:void(0)" class="logout a-logout"><i class="ico-out"></i> 로그아웃 </a> </p>
+    </div>
+    <form method="post" name="frmLogout" id="frmLogout" th:action="@{/logout}"></form>
+  </div>
+  <script>
+    $(function () {
+      $('.a-logout').click(function() {
+        $('#frmLogout').submit();
+      })
+    })
+  </script>
+</header>
+</html>

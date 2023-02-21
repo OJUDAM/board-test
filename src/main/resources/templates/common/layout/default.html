@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<!-- head -->
+<head th:replace="~{/common/fragments/head :: headFragment}">
+    <title layout:title-pattern="$CONTENT_TITLE">MANAGE</title>
+</head>
+
+<body>
+<div id="wrap" class="admin">
+    <!-- navigation-->
+    <nav th:replace="/common/fragments/header :: header"></nav>
+
+    <!-- content -->
+    <div id="container-admin" class="" th:with="url=${#request.getRequestURI()}, site=${#request.getParameter('site')}">
+        <div class="content-aside" th:if="${#strings.startsWith(url,'/admin')}">
+            <div class="lnb">
+                <ul>
+                    <li th:classappend="${#strings.startsWith(url, '/admin/author-mng')} ? 'active'"><a th:href="@{/admin/author-mng}">권한관리</a> </li>
+                    <li th:classappend="${#strings.startsWith(url, '/admin/page-mng')} ? 'active'"><a th:href="@{/admin/page-mng}">페이지 관리</a> </li>
+                    <li th:classappend="${#strings.startsWith(url, '/admin/board-mng') && #strings.contains(site, 'MAIN')} ? 'active'"><a th:href="@{/admin/board-mng(site='MAIN')}">게시판 관리</a> </li>
+                </ul>
+            </div>
+        </div>
+        <div class="content-aside" th:if="${#strings.startsWith(url, '/board')}">
+            <div class="lnb">
+                <ul>
+                    <li th:classappend="${#strings.startsWith(url, 'board/board) && #strings.contains(site, 'MAIN')} ? 'active'"><a th:href="@{/board/board(site='MAIN')}">게시판</a> </li>
+                    <li th:classappend="${#strings.startsWith(url,'/board/popup')} ? 'active'"><a th:href="@{/board/popup}">팝업관리</a></li>
+                    <li th:classappend="${#strings.startsWith(url,'/board/faq')} ? 'active'"><a th:href="@{/board/faq}">자주묻는질문</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="content-aside" th:if="${#strings.startsWith(url, '/sample')}" style="...">
+            <div class="lnb">
+                <ul>
+                    <li th:classappend="$P#strings.startsWith(url, 'sample')} ? 'active'"><a th:href="@{/sample}">샘플</a> </li>
+                </ul>
+            </div>
+        </div>
+        <th:block layout:fragment="content"></th:block>
+    </div>
+
+    <!-- footer -->
+    <footer th:replace="~{/common/fragments/footer :: footerFragment}"></footer>
+</div>
+</body>
+</html>

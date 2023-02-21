@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/common/layout/default">
+<head>
+    <title>권한 관리</title>
+</head>
+<body th:block layout:fragment="content">
+<div id="content" class="content-primary">
+    <h2 class="content-title">권한 관리</h2>
+    <div class="crumb">
+        <a th:href="@{/dashboard}" class="home">Home</a>
+        <span class="step">관리자 관리</span>
+        <strong class="step" title="현위치">권한 관리</strong>
+    </div>
+    <div class="section">
+        <form id="searchForm" th:action="@{/admin/author-mng}" method="get">
+            <input type="hidden" id="pageNum" name="pageNum"/>
+            <div class="cont-header button-area">
+                <div class="btn-right">
+                    <div class="insert">
+                        <div class="select-box">
+                            <select name="classification" th:field="${authorMng.classify}">
+                                <option th:value="all" th:text="전체"></option>
+                                <option th:value="userId" th:text="아이디"></option>
+                                <option th:value="menuName" th:text="게시판명"></option>
+                            </select>
+                        </div>
+                        <div class="input-search">
+                            <input type="text" th:field="${authorMng.keyword}"/>
+                            <button class="btn-search"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="table-wrap">
+            <table class="data-table type01">
+                <caption>아티클 리스트</caption>
+                <colgroup>
+                    <col style="width: 10;"/>
+                    <col style="..."/>
+                    <col style="..."/>
+                    <col style="..."/>
+                    <col style="..."/>
+                    <col style="..."/>
+                    <col style="..."/>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>분류</th>
+                    <th>권한게시판</th>
+                    <th>권한자</th>
+                    <th>권한</th>
+                    <th>등록일</th>
+                    <th>수정/삭제</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item,index : ${list.getContent()}">
+                    <input type="hidden" name="id" th:value="${item.baSeq}">
+                    <td th:text="${item.baSeq}"></td>
+                    <td th:text="메인"></td>
+                    <td th:text="${item.boardMng.menu.menuName}"></td>
+                    <td th:text="${item.userId}"></td>
+                    <td th:if="${item.baCode == 'C0101'}">쓰기</td>
+                    <td th:if="${item.baCode == 'C0102'}">쓰기,수정,삭제</td>
+                    <td th:text="${#temporals.format(item.createdAt,'yyyy.MM.dd HH:mm')}"></td>
+                    <td>
+                        <a th:href="@{'/admin/author-mng/edit/' + ${item.baSeq}}" class="btn small weighty">수정</a>
+                        <button class="btn small weightiest" th:onclick="del([[${item.baSeq}]])">삭제</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="cont-footer button-area">
+            <div class="btn-left">
+                <a th:href="@{'/admin/author-mng/edit'}" class="btn small weighty">권한 등록</a>
+            </div>
+            <span class="pagination">
+                <a href="javascript:void(0)" th:onclick="movePaging(1)" class="btn first">처음</a>
+                <a href="javascript:void(0)" th:onclick="movePaging([[${list.getPageable().previousOrFirst().getPageNumber()}]]);" class="btn prev">이전</a>
+                <span class="page">
+                    <a th:each="page: ${#numbers.sequence(0, list.getTotalPages()-1)}"
+                       th:classappend="${page==list.getNumber()} ? 'active'"
+                       th:text="${page+1}"
+                       href="javascript:void(0)"
+                       th:onclick="movePaging([[${page+1}]]);"
+                       th:style="${page==list.getNumber()  ? 'font-weight: bold; color: black;' : ''}"></a>
+                </span>
+                <a href="javascript:void(0)" th:onclick="movePaging([[${list.getPageable().next().getPageNumber()+1}]]);" class="btn next">다음</a>
+                <a href="javascript:void(0)" th:onclick="movePaging([[${list.getTotalPages()}]]);" class="btn last">끝</a>
+            </span>
+        </div>
+    </div>
+</div>
+<script>
+     function search () {
+        $("#searchForm").submit()
+    }
+
+    function movePaging(pageNum) {
+        $("input[name='pageNum']").val(pageNum - 1);
+        search();
+    }
+</script>
+</body>
+
+</html>
